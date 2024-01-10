@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mevoinator:
+    image: lukrzak/mevoinator
+    container_name: mevoinator
+    restart: unless-stopped
+    networks:
+      - hackaton_net
+    ports:
+      - "8080:5000"
+
+networks:
+  hackaton_net:
