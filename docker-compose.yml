@@ -10,5 +10,18 @@ services:
     ports:
       - "8080:5000"
 
+  traceinator:
+    image: lukrzak/traceinator
+    container_name: traceinator
+    restart: unless-stopped
+    networks:
+      - hackaton_net
+    ports:
+      - "8081:5001"
+    env_file:
+      - .env
+    environment:
+      API_KEY: ${API_KEY}
+
 networks:
   hackaton_net:
