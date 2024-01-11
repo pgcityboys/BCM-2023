@@ -36,7 +36,7 @@ services:
     env_file:
       - .env
     environment:
-      API_KEY: ${API_KEY}
+      API_KEY: ${GOOGLE_MAPS_API_KEY}
 
   userinator:
     image: lukrzak/userinator
@@ -54,9 +54,35 @@ services:
     depends_on:
       - db
 
+  tierinator:
+    image: luluu9/tierinator
+    container_name: tierinator
+    ports:
+      - "8083:5003"
+    env_file:
+      - .env
+    environment:
+      TIER_KEY: ${TIER_KEY}
+    networks:
+      - hackaton_net
+
+  client:
+    image: lukrzak/bcm24-client
+    container_name: client
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+      GOOGLE_ID: ${GOOGLE_ID}
+      GOOGLE_SECRET: ${GOOGLE_SECRET}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+    networks:
+      - hackaton_net
+
 networks:
   hackaton_net:
 
 volumes:
   db:
-
