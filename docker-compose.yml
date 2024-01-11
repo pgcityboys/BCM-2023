@@ -1,6 +1,21 @@
 version: '3.8'
 
-services:
+services: 
+  db: 
+    image: postgres
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: userinator
+    volumes:
+      - db:/var/lib/postgres
+    restart: always
+    networks:
+      - hackaton_net
+
   mevoinator:
     image: lukrzak/mevoinator
     container_name: mevoinator
@@ -23,5 +38,25 @@ services:
     environment:
       API_KEY: ${API_KEY}
 
+  userinator:
+    image: lukrzak/userinator
+    container_name: userinator
+    ports:
+      - "8082:8080"
+    env_file:
+      - .env
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    networks:
+      - net
+    depends_on:
+      - hackaton_net
+
 networks:
   hackaton_net:
+
+volumes:
+  db:
+    
