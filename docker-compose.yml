@@ -1,0 +1,88 @@
+version: '3.8'
+
+services: 
+  db: 
+    image: postgres
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: userinator
+    volumes:
+      - db:/var/lib/postgres
+    restart: always
+    networks:
+      - hackaton_net
+
+  mevoinator:
+    image: lukrzak/mevoinator
+    container_name: mevoinator
+    restart: unless-stopped
+    networks:
+      - hackaton_net
+    ports:
+      - "8080:5000"
+
+  traceinator:
+    image: lukrzak/traceinator
+    container_name: traceinator
+    restart: unless-stopped
+    networks:
+      - hackaton_net
+    ports:
+      - "8081:5001"
+    env_file:
+      - .env
+    environment:
+      API_KEY: ${GOOGLE_MAPS_API_KEY}
+
+  userinator:
+    image: lukrzak/userinator
+    container_name: userinator
+    ports:
+      - "8082:8080"
+    env_file:
+      - .env
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+    networks:
+      - hackaton_net
+    depends_on:
+      - db
+
+  tierinator:
+    image: luluu9/tierinator
+    container_name: tierinator
+    ports:
+      - "8083:5003"
+    env_file:
+      - .env
+    environment:
+      TIER_KEY: ${TIER_KEY}
+    networks:
+      - hackaton_net
+
+  client:
+    image: lukrzak/bcm24-client
+    container_name: client
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+      GOOGLE_ID: ${GOOGLE_ID}
+      GOOGLE_SECRET: ${GOOGLE_SECRET}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+    networks:
+      - hackaton_net
+
+networks:
+  hackaton_net:
+
+volumes:
+  db:
