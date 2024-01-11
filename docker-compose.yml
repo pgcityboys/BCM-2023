@@ -50,13 +50,13 @@ services:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
     networks:
-      - net
-    depends_on:
       - hackaton_net
+    depends_on:
+      - db
 
 networks:
   hackaton_net:
 
 volumes:
   db:
-    
+
